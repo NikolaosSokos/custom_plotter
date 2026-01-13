@@ -89,6 +89,19 @@ def run_custom_plot():
         print("Please update 'ssa_results_path' in the script to point to your SSA results.")
         return
 
+    # Check if input path exists
+    if not os.path.exists(ssa_results_path):
+        print(f"[ERROR] The SSA results directory does not exist: '{ssa_results_path}'")
+        print("Please check 'ssa_results_path' in 'plot_config.yaml'.")
+        return
+
+    # Critical File Check
+    critical_file = os.path.join(ssa_results_path, "out_Max.npy")
+    if not os.path.exists(critical_file):
+        print(f"[ERROR] Could not find 'out_Max.npy' in: {ssa_results_path}")
+        print("This file is required for plotting. Did SSA2py finish successfully?")
+        return
+
     print("Generating custom plot...")
     print(f"Params: MinBright={MY_MIN_BRIGHTNESS}, MaxBright={MY_MAX_BRIGHTNESS}, Range={MY_START_TIME}-{MY_END_TIME}s")
 
