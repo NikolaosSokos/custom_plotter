@@ -54,6 +54,7 @@ MY_END_TIME       = 60    # End time relative to origin (seconds) or None
 # 2. SCRIPT EXECUTION
 # ==========================================
 
+def run_custom_plot():
     # Load the actual configuration from the file
     # This allows us to use the attributes defined in the codebase logic
     if os.path.exists("./config.yaml"):
