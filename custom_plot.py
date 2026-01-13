@@ -3,7 +3,11 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-from obspy import UTCDateTime, Inventory
+import os
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
+from obspy import UTCDateTime, Inventory, read, read_inventory
 from SSA2py.core import config
 # Import the plotting function from your local SSA2py installation
 # Ensure this script is run from a location where SSA2py is importable
@@ -105,6 +109,55 @@ def run_custom_plot():
     print("Generating custom plot...")
     print(f"Params: MinBright={MY_MIN_BRIGHTNESS}, MaxBright={MY_MAX_BRIGHTNESS}, Range={MY_START_TIME}-{MY_END_TIME}s")
 
+    # ==========================================
+    # DATA LOADING (Mimicking SSA2py codebase)
+    # ==========================================
+    
+    # 1. Infer Event Directory and Data Names from 'ssa_results_path'
+    # Structure: .../Events/TIME/Results/SSA/MSEED_NAME/Detailed_Solution
+    try:
+        # detailed_sol_dir = .../Detailed_Solution
+        mseed_base_name = os.path.basename(os.path.dirname(ssa_results_path)) # e.g. ENV_2.0_8.0_E
+        results_ssa_dir = os.path.dirname(os.path.dirname(ssa_results_path))   # .../Results/SSA
+        results_dir = os.path.dirname(results_ssa_dir)                         # .../Results
+        event_dir = os.path.dirname(results_dir)                               # .../Events/TIME
+        
+        print(f"[INFO] Inferred Event Directory: {event_dir}")
+        print(f"[INFO] Inferred Data Base Name: {mseed_base_name}")
+
+        # 2. Load Inventory
+        inventory_path = os.path.join(event_dir, "Inventory", "inventory.xml")
+        if os.path.exists(inventory_path):
+            print(f"[INFO] Loading Inventory from: {inventory_path}")
+            inv_obj = read_inventory(inventory_path)
+            # Mimic config.inv
+            config.inv = inv_obj 
+        else:
+            print(f"[WARNING] Inventory file not found at {inventory_path}. Plot will miss station icons.")
+            inv_obj = Inventory()
+
+        # 3. Load Waveforms (to get stations_used)
+        # The mseed file should be in Processed_Data/{mseed_base_name}.mseed
+        mseed_path = os.path.join(event_dir, "Processed_Data", f"{mseed_base_name}.mseed")
+        
+        stations_used_list = []
+        if os.path.exists(mseed_path):
+             print(f"[INFO] Loading Waveforms from: {mseed_path}")
+             st = read(mseed_path)
+             # Mimic creation of stations_used list from plot_res.py
+             # stations_used = [tr.stats.network+'.'+tr.stats.station for tr in config.st]
+             stations_used_list = list(set([tr.stats.network + '.' + tr.stats.station for tr in st]))
+             print(f"[INFO] Found {len(stations_used_list)} stations used.")
+             # Update global config.st as plot_res_ expects it sometimes
+             config.st = st
+        else:
+             print(f"[WARNING] Processed mseed file not found at {mseed_path}. Stations will not be plotted.")
+
+    except Exception as e:
+        print(f"[ERROR] Failed to load associated data (Inventory/Waveforms): {e}")
+        inv_obj = Inventory()
+        stations_used_list = []
+
     try:
         MaxBrightTimeStep_(
             brpath=ssa_results_path,
@@ -113,8 +166,8 @@ def run_custom_plot():
             evlo=event_lon,
             evdepth=event_depth,
             time=origin_time,
-            inv=Inventory(), # Empty inventory (no stations plotted)
-            stations_used=[], # Empty list
+            inv=inv_obj, # Pass the loaded inventory
+            stations_used=stations_used_list, # Pass the real stations list
             
             # CUSTOM VALUES
             startTime=MY_START_TIME,
