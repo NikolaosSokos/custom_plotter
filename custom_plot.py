@@ -182,7 +182,7 @@ def run_custom_plot():
             
             # Standard settings
             points_size=8,        # Original: 8
-            maxgrid=100,
+            maxgrid=MY_MAX_GRID,
             faults=False, 
             grid=True,
             hypo=True,
