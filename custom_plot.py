@@ -49,10 +49,11 @@ event_depth = 10.0
 origin_time = UTCDateTime("2023-01-01T12:00:00")
 
 # Custom Brightness & Time Settings
-MY_MIN_BRIGHTNESS = 0.5   # Set your custom minimum brightness (e.g., 0.5) or None
-MY_MAX_BRIGHTNESS = 1.0   # Set your custom maximum brightness (e.g., 1.0) or None
-MY_START_TIME     = 0     # Start time relative to origin (seconds) or None
-MY_END_TIME       = 60    # End time relative to origin (seconds) or None
+# Default: None (Auto-scaled by the plotting function)
+MY_MIN_BRIGHTNESS = None
+MY_MAX_BRIGHTNESS = None
+MY_START_TIME     = None
+MY_END_TIME       = None
 
 # ==========================================
 # 2. SCRIPT EXECUTION
