@@ -21,25 +21,12 @@ from SSA2py.core.plotting_functions.MaxBrightTimeStep import MaxBrightTimeStep_
 # 1. SETUP
 # ==========================================
 
-# Read paths from plot_config.yaml
-# We reuse the config.read function from SSA2py to parse the YAML
-try:
-    if os.path.exists("plot_config.yaml"):
-        _p_cfg = config.read("plot_config.yaml")
-        ssa_results_path = _p_cfg.get('ssa_results_path')
-        output_path = _p_cfg.get('output_path', './Custom_Plots')
-    elif os.path.exists("custom_ssa_plotter/plot_config.yaml"):
-         # specific check if running from root but config is in subfolder
-        _p_cfg = config.read("custom_ssa_plotter/plot_config.yaml")
-        ssa_results_path = _p_cfg.get('ssa_results_path')
-        output_path = _p_cfg.get('output_path', './Custom_Plots')
-    else:
-        # Fallback provided for safety, or error out
-        print("Error: plot_config.yaml not found.")
-        sys.exit(1)
-except Exception as e:
-    print(f"Error reading plot_config.yaml: {e}")
-    sys.exit(1)
+# Path to the directory containing your SSA results (where out_Max.npy is located)
+# Example: "/path/to/SSA2py/Events/2023-01-01T12:00:00/Results/SSA/Processed_Data_.../Detailed_Solution"
+ssa_results_path = "/Users/nsokos/Nikos/SSA2py/Events/2023-01-01T12:00:00/Results/SSA/Detailed_Solution"  # <--- UPDATE THIS
+
+# Output directory for the new plot
+output_path = "./Custom_Plots"
 
 # Event Details (Update these to match your event)
 # These remain in the script as requested (config only for paths)
