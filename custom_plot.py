@@ -36,23 +36,29 @@ MY_END_TIME       = 60    # End time relative to origin (seconds) or None
 # 2. SCRIPT EXECUTION
 # ==========================================
 
-def run_custom_plot():
-    # Mocking the configuration needed by the function
-    config.cfg = {
-        'Plotting': {
-            'Topography/Bathymetry': [False, ''],
-            'Save Layers': './Layers' # Points to where SSA2py expects layers; adjust if needed
-        },
-        'gridRules': [['box']] 
-    }
+    # Load the actual configuration from the file
+    # This allows us to use the attributes defined in the codebase logic
+    if os.path.exists("./config.yaml"):
+        config.cfg = config.read("./config.yaml")
+    else:
+        print("Warning: ./config.yaml not found, using minimal defaults")
+        config.cfg = {'Plotting': {'Topography/Bathymetry': [False, ''], 'Save Layers': './SSA2py/figure_layers'}, 'Backprojection': {'Grid': [[0.0, 9.0, ['box', 50, 50, 0, 20, 1]]]}}
 
-    # Dummy logger to suppress SSA2py logging noise
+    # Initialize Logger (Required by SSA2py functions)
     class DummyLogger:
         def warning(self, msg): print(f"[WARNING] {msg}")
         def info(self, msg): print(f"[INFO] {msg}")
         def error(self, msg): print(f"[ERROR] {msg}")
-    
     config.logger = DummyLogger()
+    
+    # Calculate gridRules using the library's own logic
+    # This avoids "extra attributes" by deriving them from the config as the main app does
+    # We check for a generic high magnitude coverage (e.g., 5.0) to get a valid grid rule
+    try:
+        config.gridRules = config.rules(5.0, config.cfg['Backprojection']['Grid'])
+    except Exception:
+        # Fallback if config interpretation fails
+        config.gridRules = [['box']]
 
     # Ensure output directory exists
     if not os.path.exists(output_path):
