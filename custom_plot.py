@@ -55,6 +55,10 @@ MY_MAX_BRIGHTNESS = None
 MY_START_TIME     = None
 MY_END_TIME       = None
 
+# Map Extent (Grid Size in km)
+# Default: 100. Defines the box size around the epicenter (Epicenter +/- maxgrid/2).
+MY_MAX_GRID       = 100 
+
 # ==========================================
 # 2. SCRIPT EXECUTION
 # ==========================================
