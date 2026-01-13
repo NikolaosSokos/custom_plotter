@@ -1,0 +1,7 @@
+# Configuration for custom_plot.py
+
+# Path to the directory containing your SSA results (where out_Max.npy is located)
+ssa_results_path: "/Users/nsokos/Nikos/SSA2py/Events/2023-01-01T12:00:00/Results/SSA/Detailed_Solution"
+
+# Where to save the plots
+output_path: "./Custom_Plots"
