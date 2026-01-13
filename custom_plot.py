@@ -177,12 +177,12 @@ def run_custom_plot():
             maxBrig=MY_MAX_BRIGHTNESS,
             
             # Standard settings
-            points_size=10,
+            points_size=8,        # Original: 8
             maxgrid=100,
             faults=False, 
             grid=True,
             hypo=True,
-            colormap='plasma',
+            colormap='rainbow',   # Original: 'rainbow'
             topo=False,   
             meridian=True,
             info_box=True,
